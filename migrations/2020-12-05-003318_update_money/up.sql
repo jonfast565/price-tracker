@@ -1,0 +1,3 @@
+-- Your SQL goes here
+
+ALTER TABLE prices ALTER COLUMN price SET DATA TYPE DECIMAL;
