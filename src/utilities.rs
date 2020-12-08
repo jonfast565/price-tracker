@@ -1,4 +1,5 @@
 extern crate reqwest;
+use diesel::pg::data_types::PgNumeric;
 use substring::Substring;
 
 pub async fn simple_get_request(url: &str) -> Result<String, Box<dyn std::error::Error>> {

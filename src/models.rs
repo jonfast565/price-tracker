@@ -1,7 +1,8 @@
 use crate::schema::items;
 use crate::schema::prices;
 use chrono::NaiveDateTime;
-use diesel::pg::data_types::{PgNumeric, PgTimestamp};
+use bigdecimal::BigDecimal;
+use diesel::sql_types::*;
 
 #[derive(Queryable, Clone)]
 pub struct Item {
@@ -29,7 +30,7 @@ struct NewItem {
 pub struct Price {
     pub id: i32,
     pub parent_item_id: i32,
-    pub price: PgNumeric,
+    pub price: BigDecimal,
     pub current: bool,
     pub created_by: String,
     pub created_datetime: NaiveDateTime,
@@ -41,6 +42,6 @@ pub struct Price {
 #[table_name = "prices"]
 struct NewPrice {
     parent_item_id: i32,
-    price: PgNumeric,
+    price: BigDecimal,
     current: bool,
 }

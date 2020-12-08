@@ -46,11 +46,11 @@ pub fn update_price(input_product_id: String, new_price: String) {
         match new_prices.first() {
             Some(record) => {
                 // TODO: Figure this out
-                /*
-                if record.price == new_price {
+                crate::log::info(record.price.to_string());
+                crate::log::info(new_price.to_string());
+                if record.price.to_string() == new_price {
 
                 }
-                */
             }
             None => panic!("No first record"),
         };
