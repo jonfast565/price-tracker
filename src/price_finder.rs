@@ -4,16 +4,25 @@ use scraper::{Html, Selector};
 
 #[async_trait]
 pub trait PriceFinder {
-    async fn read_price(&self, product_id: String) -> Result<String, Box<dyn std::error::Error>>;
+    async fn read_price(&self, product_id: String) -> Result<PriceResult, Box<dyn std::error::Error>>;
 }
 
 pub struct AmazonPriceFinder {}
 
 #[async_trait]
 impl PriceFinder for AmazonPriceFinder {
-    async fn read_price(&self, product_id: String) -> Result<String, Box<dyn std::error::Error>> {
-        self.read_amazon_price(&product_id).await
+    async fn read_price(&self, product_id: String) -> Result<PriceResult, Box<dyn std::error::Error>> {
+        let price = self.read_amazon_price(&product_id).await?;
+        Ok(PriceResult {
+            price: price,
+            product_id: product_id
+        })
     }
+}
+
+pub struct PriceResult {
+    pub product_id: String,
+    pub price: String
 }
 
 impl AmazonPriceFinder {

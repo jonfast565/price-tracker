@@ -25,36 +25,62 @@ pub fn update_price(input_product_id: String, new_price: String) {
 
     let connection = establish_connection();
 
-    let first_item = items
+    let first_product = items
         .filter(item_param.eq(input_product_id))
         .first::<Item>(&connection)
         .expect("Error loading item");
 
-    let current_prices = prices.filter(parent_item_id.eq(first_item.id));
-
-    diesel::update(current_prices)
-        .set(current.eq(false))
-        .execute(&connection)
-        .expect("Error clearing current prices for this object");
+    let current_prices = prices.filter(parent_item_id.eq(first_product.id));
 
     let new_prices = prices
-        .filter(parent_item_id.eq(first_item.id))
+        .filter(parent_item_id.eq(first_product.id))
         .order_by(crate::schema::prices::last_modified_datetime.desc())
         .load::<Price>(&connection)
         .expect("Error loading prices");
-    if new_prices.len() > 0 {
-        match new_prices.first() {
-            Some(record) => {
-                // TODO: Figure this out
-                crate::log::info(record.price.to_string());
-                crate::log::info(new_price.to_string());
-                if record.price.to_string() == new_price {
 
-                }
+    match new_prices.first() {
+        Some(record) => {
+            // TODO: Insert new price if it is different
+            let new_price_bd = crate::utilities::bigdecimal_from_price(&new_price);
+            if record.price != new_price_bd {
+                crate::log::info(format!("Insert new price: {}", new_price.to_string()));
+                diesel::update(current_prices)
+                .set(current.eq(false))
+                .execute(&connection)
+                .expect("Error clearing current prices for this object");
+
+                diesel::insert_into(prices)
+                .values(NewPrice {
+                    parent_item_id: record.parent_item_id,
+                    price: new_price_bd,
+                    current: true
+                })
+                .execute(&connection)
+                .expect("Price not inserted");
+            } else {
+                crate::log::info_static("Prices already up to date");
             }
-            None => panic!("No first record"),
-        };
-    }
+        }
+        None => {
+            // TODO: Insert the new price only
+            crate::log::info(format!("Insert new price: {}", new_price.to_string()));
+            let new_price_bd = crate::utilities::bigdecimal_from_price(&new_price);
+            
+            diesel::update(current_prices)
+            .set(current.eq(false))
+            .execute(&connection)
+            .expect("Error clearing current prices for this object");
+
+            diesel::insert_into(prices)
+            .values(NewPrice {
+                parent_item_id: first_product.id,
+                price: new_price_bd,
+                current: true
+            })
+            .execute(&connection)
+            .expect("Price not inserted");
+        },
+    };
 }
 
 fn establish_connection() -> PgConnection {

@@ -40,8 +40,8 @@ pub struct Price {
 
 #[derive(Insertable, Clone)]
 #[table_name = "prices"]
-struct NewPrice {
-    parent_item_id: i32,
-    price: BigDecimal,
-    current: bool,
+pub struct NewPrice {
+    pub parent_item_id: i32,
+    pub price: BigDecimal,
+    pub current: bool,
 }

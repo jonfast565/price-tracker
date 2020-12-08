@@ -19,6 +19,13 @@ use tracing_subscriber;
 #[instrument]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     setup_logging();
+    loop {
+        process_loop().await?;
+    }
+    // Ok(())
+}
+
+async fn process_loop() -> Result<(), Box<dyn std::error::Error>> {
     let amazon_price_finder = price_finder::AmazonPriceFinder {};
     let items = database::get_items();
 
@@ -31,7 +38,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for res in vres {
         match res {
-            Ok(price) => log::info(format!("{}", price)),
+            Ok(result) => { 
+                log::info(format!("{}", result.price));
+                database::update_price(result.product_id, result.price);
+                ()
+            },
             Err(_err) => log::error_static("Price could not be found"),
         }
     }
