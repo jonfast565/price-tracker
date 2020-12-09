@@ -41,7 +41,6 @@ async fn process_loop() -> Result<(), Box<dyn std::error::Error>> {
             Ok(result) => { 
                 log::info(format!("{}", result.price));
                 database::update_price(result.product_id, result.price);
-                ()
             },
             Err(_err) => log::error_static("Price could not be found"),
         }
