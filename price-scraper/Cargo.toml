@@ -5,6 +5,8 @@ authors = ["Jon Fast <jnfstdj656@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+
+# crates deps
 reqwest = { version = "0.10", features = ["json", "rustls-tls", "gzip"] }
 tokio = { version = "0.2", features = ["full"] }
 futures = "0.3.8"
@@ -14,4 +16,8 @@ async-trait = "0.1.42"
 dotenv = "0.15.0"
 tracing = "0.1"
 tracing-subscriber = "0.2"
+substring = "1.4.0"
+
+# local deps
 price-db = { path = "../price-db" }
+logger = { path = "../logger" }

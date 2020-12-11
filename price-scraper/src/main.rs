@@ -1,7 +1,7 @@
 extern crate scraper;
 extern crate price_db;
+extern crate logger;
 
-mod log;
 mod price_finder;
 mod utilities;
 
@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 async fn process_loop() -> Result<(), Box<dyn std::error::Error>> {
     let amazon_price_finder = price_finder::AmazonPriceFinder {};
-    let items = database::get_items();
+    let items = price_db::get_items();
 
     let mut v = Vec::new();
     for item in items {
@@ -34,10 +34,10 @@ async fn process_loop() -> Result<(), Box<dyn std::error::Error>> {
     for res in vres {
         match res {
             Ok(result) => { 
-                log::info(format!("{}", result.price));
-                database::update_price(result.product_id, result.price);
+                logger::info(format!("{}", result.price));
+                price_db::update_price(result.product_id, result.price);
             },
-            Err(_err) => log::error_static("Price could not be found"),
+            Err(_err) => logger::error_static("Price could not be found"),
         }
     }
 
@@ -46,5 +46,5 @@ async fn process_loop() -> Result<(), Box<dyn std::error::Error>> {
 
 fn setup_logging() {
     tracing_subscriber::fmt::init();
-    log::display_header();
+    logger::display_header();
 }

@@ -31,7 +31,7 @@ impl AmazonPriceFinder {
         let mut product_id_string = String::new();
         product_id_string.push_str(amazon_product_url);
         product_id_string.push_str(product_id);
-        super::log::info(format!("Amazon Url: {}", &product_id_string));
+        logger::info(format!("Amazon Url: {}", &product_id_string));
         product_id_string
     }
 
@@ -39,7 +39,7 @@ impl AmazonPriceFinder {
         &self,
         product_id: &str,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        super::log::info_static("Getting amazon page");
+        logger::info_static("Getting amazon page");
         let amazon_url = self.build_amazon_url(product_id);
         let document = super::utilities::simple_get_request(&amazon_url).await?;
         let body = Html::parse_document(&document);
@@ -56,7 +56,7 @@ impl AmazonPriceFinder {
             }
         };
 
-        super::log::info_static("Finding price");
+        logger::info_static("Finding price");
 
         let our_price = body.select(&price_block_selector).next();
         let our_price_string = match our_price {
