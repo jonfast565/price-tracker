@@ -46,7 +46,7 @@ pub fn update_price(input_product_id: String, new_price: String) {
 
     match new_prices.first() {
         Some(record) => {
-            // TODO: Insert new price if it is different
+            // Insert new price if it is different
             let new_price_bd = crate::utilities::bigdecimal_from_price(&new_price);
             if record.price != new_price_bd {
                 logger::info(format!("Insert new price: {}", new_price.to_string()));
@@ -68,7 +68,7 @@ pub fn update_price(input_product_id: String, new_price: String) {
             }
         }
         None => {
-            // TODO: Insert the new price only
+            // Insert the new price alone
             logger::info(format!("Insert new price: {}", new_price.to_string()));
             let new_price_bd = crate::utilities::bigdecimal_from_price(&new_price);
             
