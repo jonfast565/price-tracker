@@ -7,7 +7,7 @@ mod models;
 mod schema;
 mod utilities;
 
-use crate::models::*;
+use crate::models::{Item, NewPrice, Price};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenv::dotenv;
