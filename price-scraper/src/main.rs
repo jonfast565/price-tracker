@@ -1,13 +1,8 @@
 extern crate scraper;
+extern crate price_db;
 
-#[macro_use]
-extern crate diesel;
-
-mod database;
 mod log;
-mod models;
 mod price_finder;
-mod schema;
 mod utilities;
 
 use futures::future::join_all;

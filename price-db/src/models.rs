@@ -2,7 +2,7 @@ use crate::schema::items;
 use crate::schema::prices;
 use chrono::NaiveDateTime;
 use bigdecimal::BigDecimal;
-use diesel::sql_types::*;
+// use diesel::sql_types::*;
 
 #[derive(Queryable, Clone)]
 pub struct Item {

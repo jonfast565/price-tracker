@@ -1,5 +1,11 @@
+#[macro_use]
 extern crate diesel;
 extern crate dotenv;
+extern crate logger;
+
+mod models;
+mod schema;
+mod utilities;
 
 use crate::models::*;
 use diesel::pg::PgConnection;
@@ -15,7 +21,7 @@ pub fn get_items() -> Vec<Item> {
         .load::<Item>(&connection)
         .expect("Error loading items");
 
-    crate::log::info(format!("Found {} items from database", result_items.len()));
+    logger::info(format!("Found {} items from database", result_items.len()));
     result_items.to_owned()
 }
 
@@ -43,7 +49,7 @@ pub fn update_price(input_product_id: String, new_price: String) {
             // TODO: Insert new price if it is different
             let new_price_bd = crate::utilities::bigdecimal_from_price(&new_price);
             if record.price != new_price_bd {
-                crate::log::info(format!("Insert new price: {}", new_price.to_string()));
+                logger::info(format!("Insert new price: {}", new_price.to_string()));
                 diesel::update(current_prices)
                 .set(current.eq(false))
                 .execute(&connection)
@@ -58,12 +64,12 @@ pub fn update_price(input_product_id: String, new_price: String) {
                 .execute(&connection)
                 .expect("Price not inserted");
             } else {
-                crate::log::info_static("Prices already up to date");
+                logger::info_static("Prices already up to date");
             }
         }
         None => {
             // TODO: Insert the new price only
-            crate::log::info(format!("Insert new price: {}", new_price.to_string()));
+            logger::info(format!("Insert new price: {}", new_price.to_string()));
             let new_price_bd = crate::utilities::bigdecimal_from_price(&new_price);
             
             diesel::update(current_prices)

@@ -1,8 +1,12 @@
 [package]
-name = "price-tracker"
+name = "logger"
 version = "0.1.0"
 authors = ["Jon Fast <jnfstdj656@gmail.com>"]
 edition = "2018"
 
+[lib]
+crate-type = ["cdylib"]
+bench = false
+
 [dependencies]
-rocket = "0.4.6"
+tracing = "0.1"
